@@ -1211,10 +1211,7 @@ def wgetch(scr_id):
     Read a character from window scr_id.
     """
 
-    ch = lib1.wgetch(scr_id)
-    if ch == -1:
-        raise TimeoutError("Time elapsed.")
-    return ch
+    return lib1.wgetch(scr_id)
 
 
 def wget_wch(scr_id): # NEEDS_CHECK? # https://stackoverflow.com/questions/1081456/wchar-t-vs-wint-t
@@ -2663,10 +2660,7 @@ def mvgetch(y, x):
     Move the current position to (y, x) and read a character.
     """
 
-    ch = mvwgetch(stdscr, y, x)
-    if ch == -1:
-        raise TimeoutError("Time elapsed")
-    return ch
+    return mvwgetch(stdscr, y, x)
 
 
 def addch(ch, attr=A_NORMAL):

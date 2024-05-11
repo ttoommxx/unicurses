@@ -625,7 +625,7 @@ def RCCHAR(ch):
 
     if isinstance(ch, int):
         return chr(ch)
-    if isinstance(ch, str) or isinstance(ch, bytes):
+    if isinstance(ch, (str, bytes)):
         return ch
     raise ValueError("RCCHAR: can't parse a non-char/non-int value.")
 
@@ -634,7 +634,7 @@ def CCHAR(ch):
     Get a C character.
     """
 
-    if isinstance(ch, str) or isinstance(ch, bytes):
+    if isinstance(ch, (str, bytes)):
         return ord(ch)
     if isinstance(ch, int):
         return ch
@@ -646,7 +646,7 @@ def ALTCHAR(ch):
     Alternate character set.
     """
 
-    if isinstance(ch, str) or isinstance(ch, bytes):
+    if isinstance(ch, (str, bytes)):
         return ord(ch) | A_ALTCHARSET
     if isinstance(ch, int):
         return ch | A_ALTCHARSET
@@ -1064,7 +1064,7 @@ def wchgat(scr_id, num, attr, color, opts=None):
     return lib1.wchgat(scr_id, num, attr, color, None)
 
 
-def color_content(color_number): # TODO: not working
+def color_content(color_number):
     """
     Return (r, g, b) of color_number.
     """
@@ -1077,27 +1077,19 @@ def color_content(color_number): # TODO: not working
 
 
 if PDCURSES:
-    def color_pair(color_number):
+    def COLOR_PAIR(color_number):
         """
         Convert color_number to an attribute.
         """
 
         return PD_COLOR_PAIR(color_number)
 elif NCURSES:
-    def color_pair(color_number):
+    def COLOR_PAIR(color_number):
         """
         Convert color_number to an attribute.
         """
 
         return NC_COLOR_PAIR(color_number)
-
-
-def COLOR_PAIR(color_number):
-    """
-    Convert color_number to an attribute.
-    """
-
-    return  color_pair(color_number)
 
 
 def delwin(scr_id):
@@ -1339,7 +1331,7 @@ def getyx(scr_id):
     return (cy, cx)
 
 
-def halfdelay(tenths): # TODO: error is -1, so how about actually raising an error in python if that's the ouput?
+def halfdelay(tenths):
     """
     Similar to cbreak, make characters typed by the user immediately available. After blocking for tenths tenths of seconds, ERR is returned if nothing has been typed.
     """
@@ -2357,12 +2349,17 @@ def unctrl(ch):
 
 
 # TODO: fix this, the problem is that wunctrl needs cchar_t as function argument, which is internal type of ncurses
-def wunctrl(ch):
+def wunctrl(wch):
     """
-    Return a string which is a printable representation of the wide character ch, ignoring attributes.
+    Return a string which is a printable representation of the wide character wch, ignoring attributes.
     """
-    
-    return lib1.wunctrl( ch )
+   
+
+    cchar = cchar_t(chars=RCCHAR(wch))
+    address = lib1.wunctrl( ctypes.byref( cchar ) )
+    wchar_p = ctypes.c_wchar_p(address)
+
+    return wchar_p
 
 
 if PDCURSES:
@@ -2928,8 +2925,8 @@ def wrapper(function, *args, **kwargs):
     initscr()
     try:
         return function(stdscr, *args, **kwargs)
-    except Exception as exception:
-        raise exception
+    except:
+        raise
     finally:
         endwin()
 #endregion -- REGULAR\MACRO FUNCTIONS THAT DO NOT TAKE A WINDOW AS AN ARGUMENT --

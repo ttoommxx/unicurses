@@ -236,9 +236,13 @@ def main(stdscr, command: str) -> None:
             char = uc.winch(stdscr)
             uc.mvaddstr(1, 0, char)
         case "init_color":
-            raise NotImplementedError
+            uc.start_color()
+            uc.init_color(uc.COLOR_RED, 255, 0, 0)
+            uc.addstr(f"{uc.color_content(uc.COLOR_RED)}")
         case "init_pair":
-            raise NotImplementedError
+            uc.start_color()
+            uc.init_pair(uc.COLOR_RED, uc.COLOR_RED, uc.COLOR_BLACK)
+            uc.addstr("hello world in red", uc.COLOR_PAIR(uc.COLOR_RED))
         case "winsch":
             uc.addstr("ello world")
             uc.move(0, 0)
@@ -525,7 +529,7 @@ def main(stdscr, command: str) -> None:
         case "unctrl":
             uc.addstr(uc.unctrl("e"))
         case "wunctrl":
-            raise NotImplementedError
+            uc.addstr(uc.wunctrl("e"))
         case "ungetch":
             uc.ungetch("e")
             button = uc.getkey()

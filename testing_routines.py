@@ -424,9 +424,13 @@ def main(stdscr, command: str) -> None:
         case "overwrite":
             raise NotImplementedError
         case "pair_content":
-            raise NotImplementedError
+            uc.start_color()
+            uc.init_pair(13, uc.COLOR_RED, uc.COLOR_BLACK)
+            uc.addstr(f"{uc.pair_content(13)}")
         case "pair_number":
-            raise NotImplementedError
+            uc.start_color()
+            uc.init_pair(13, uc.COLOR_RED, uc.COLOR_BLACK)
+            uc.addstr(f"{uc.pair_number(uc.COLOR_PAIR(13))}")
         case "prefresh":
             raise NotImplementedError
         case "putp":
@@ -545,7 +549,9 @@ def main(stdscr, command: str) -> None:
             uc.addstr(" world")
             uc.untouchwin(stdscr)
         case "use_default_colors":
-            raise NotImplementedError
+            uc.start_color()
+            uc.use_default_colors()
+            uc.addstr("hello world")
         case "use_env":
             raise NotImplementedError
         case _:
